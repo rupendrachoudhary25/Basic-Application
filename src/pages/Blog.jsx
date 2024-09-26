@@ -3,24 +3,30 @@ import React, { useEffect, useState } from "react";
 function Blog() {
   const [blog, setBlog] = useState([]);
   const [userId, setUserId] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         setBlog(data);
-        console.log(data);
+        setLoading(false);
       });
   }, [userId]);
 
   const handleUserClick = (id) => {
     setUserId(id);
   };
-
+  if (loading) {
+    return (
+      <div class="loader-wrapper">
+        <div class="loader"></div>
+      </div>
+    );
+  }
   return (
     <div>
-      <h1>Blog Posts by User {userId}</h1>
-
       {blog.map((p) => {
         return (
           <div key={p.id} className="blog">
@@ -30,7 +36,6 @@ function Blog() {
         );
       })}
 
-      {/* Pagination Buttons */}
       <div className="pagination-buttons">
         <button
           onClick={() => handleUserClick(1)}
